@@ -2,6 +2,7 @@ import sys
 import os
 from dotenv import load_dotenv
 from google import genai
+from google.genai import types
 
 def main():
     load_dotenv()
@@ -11,10 +12,12 @@ def main():
         sys.exit(1)
     client = genai.Client(api_key=api_key)
     promptContents = sys.argv
+    user_prompt = promptContents[1]
 
-    if(len(promptContents) == 2):
+    if(len(promptContents) >= 2):
+        messages = [types.Content(role="user", parts=[types.Part(text = user_prompt)])]
         response = client.models.generate_content(
-            model="gemini-2.0-flash-001", contents= promptContents[1]
+            model="gemini-2.0-flash-001", contents= messages
         )
 
         usage = response.usage_metadata
@@ -22,8 +25,10 @@ def main():
         responseTokens = usage.candidates_token_count
 
         print(response.text)
-        print(f"Prompt tokens: {promptTokens}")
-        print(f"Response tokens: {responseTokens}")
+        if("--verbose" in promptContents):
+            print(f"User prompt: {user_prompt}")
+            print(f"Prompt tokens: {promptTokens}")
+            print(f"Response tokens: {responseTokens}")
     else:
         print("Error:missing prompt.\nUsage: uv run main.py \"<write prompt here>\"", file=sys.stderr)
         sys.exit(1)
