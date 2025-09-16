@@ -1,9 +1,11 @@
 import os
+from LLM_Configs import WORKING_DIR
+from google.genai import types
 
-def get_files_info(working_directory, directory="."):
+def get_files_info(directory="."):
     try:
-        root_path = os.path.abspath(working_directory)
-        target_path = os.path.abspath(os.path.join(working_directory, directory))
+        root_path = os.path.abspath(WORKING_DIR)
+        target_path = os.path.abspath(os.path.join(WORKING_DIR, directory))
 
         if(root_path == target_path or target_path.startswith(root_path+os.sep)):
             try:
@@ -30,3 +32,17 @@ def get_files_info(working_directory, directory="."):
             return f'Error: Cannot list "{directory}" as it is outside the permitted working directory'
     except Exception as e:
         return f"Error: {e}"
+    
+schema_get_files_info = types.FunctionDeclaration(
+    name="get_files_info",
+    description="Lists files in the specified directory along with their sizes, constrained to the working directory.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "directory": types.Schema(
+                type=types.Type.STRING,
+                description="The directory to list files from, relative to the working directory. If not provided, lists files in the working directory itself.",
+            ),
+        },
+    ),
+)

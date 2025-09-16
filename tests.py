@@ -1,4 +1,7 @@
 from functions.get_files_info import get_files_info
+from functions.get_file_content import get_file_content
+from functions.write_file import write_file
+from functions.run_python_file import run_python_file
 
 def show(header, result):
     print(header)
@@ -7,7 +10,4 @@ def show(header, result):
     else:
         print(result)
 
-show("Result for current directory:", get_files_info("calculator", "."))
-show("Result for 'pkg' directory:", get_files_info("calculator", "pkg"))
-show("Result for '/bin' directory:", get_files_info("calculator", "/bin"))
-show("Result for '../' directory:", get_files_info("calculator", "../"))
+#No Tests Currently
